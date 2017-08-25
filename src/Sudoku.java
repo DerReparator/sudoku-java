@@ -8,8 +8,6 @@ import java.io.IOException;
 public class Sudoku {
 
     private final int[][] squares;
-    /** This should be deleted in a final version. It stores the String-Form of a scanned Sudoku. **/
-    String debugSudoku = null;
     String ls = System.getProperty("line.separator");
 
     /**
@@ -17,7 +15,7 @@ public class Sudoku {
      */
     public Sudoku() {
         squares = new int[9][9];
-        fillSudoku();
+        fillFromFile("easy50.txt");
     }
 
     /**
@@ -25,7 +23,6 @@ public class Sudoku {
      * Constructor primarily used for storing the solution of a Sudoku in a new Sudoku-object.
      */
     public Sudoku(int[][] values) {
-        System.out.println(values.length);
         if(values.length == 9){
             this.squares = values;
         } else {
@@ -39,47 +36,52 @@ public class Sudoku {
     }
 
     /**
-     * Static helper method to output a 2D-array to the console.
+     * Save this Sudoku to a file. (Currently you're only able to store one Sudoku per file.)
+     * @param pathname The name of the file.
+     * @return True if successful.
      */
-    public static void printSudoku(int[][] cells){
-        for(int y = 0; y < cells.length; y++) {
-            for (int x = 0; x < cells[y].length; x++)
-                System.out.print("|" + cells[y][x]);
-            System.out.println("|");
-        }
-        System.out.println();
+    public boolean saveSudokuToFile(String pathname){
+        return false;
     }
 
     /**
      * Gets a random sudoku from easy50.txt and parses it into a 2D-byte-array.
+     * @param file Specifies the file in which Sudokus are stored.
      */
-    private void fillSudoku(){
+    private void fillFromFile(String file){
         String fileString = null;
+        // TODO get the number of lines from the parsed file.
+        int lines = 50;
         try {
-            fileString = readFile("easy50.txt");
+            fileString = readFile(file);
         } catch (IOException e) {
             System.err.println("Oops! Something went wrong while reading from file!");
         }
 
-        int lineNr = (int) (Math.random() * 50);
+        int lineNr = (int) (Math.random() * lines);
         int i = 0;
         while (i < lineNr) {
             fileString = fileString.substring(fileString.indexOf(ls) + 1);
             i++;
         }
 
-        debugSudoku = (fileString.substring(1, fileString.indexOf(ls)));
-        char[] sudokuString = debugSudoku.toCharArray();
-        if (sudokuString.length != 81){
+        char[] sudoku = (fileString.substring(1, fileString.indexOf(ls))).toCharArray();
+        if (sudoku.length != 81){
             System.err.println("Problem with input format! Has to be 81 digits!");
-            System.out.println("length: " + sudokuString.length + " = " + fileString.substring(0, fileString.indexOf(ls)));
+            System.out.println("length: " + sudoku.length + " = " + fileString.substring(0, fileString.indexOf(ls)));
         } else {
             for (int y = 0; y < 9; y++)
                 for (int x = 0; x < 9; x++)
-                    squares[y][x] = Character.getNumericValue(sudokuString[y*9+x]);
+                    squares[y][x] = Character.getNumericValue(sudoku[y*9+x]);
         }
     }
 
+    /**
+     * Returns a String representation of all Sudokus contained in the specified file.
+     * @param file The filepath.
+     * @return Sudokus in String representation seperated by system-specific newline char.
+     * @throws IOException
+     */
     private String readFile(String file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line = null;

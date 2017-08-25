@@ -20,10 +20,19 @@ public class Tester {
             {0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0},};
+
     public static void main(String[] args){
-        //new Tester().test_random_solving();
-        new Tester().test_solving();
+        // new Tester().test_random_solving();
+        //new Tester().test_solving();
         //new Tester().test_isValidCell();
+        new Tester().test_createSudoku();
+    }
+
+    /**
+     * Written during the implementation of SudokuCreater.
+     */
+    private void test_createSudoku() {
+        SudokuHelper.printSudoku(new SudokuCreater().createSudoku().getSquares());
     }
 
     /**
@@ -41,7 +50,7 @@ public class Tester {
     private void test_random_solving(){
         Sudoku s = new Sudoku();
         System.out.println("Solving:");
-        Sudoku.printSudoku(s.getSquares());
+        SudokuHelper.printSudoku(s.getSquares());
         SudokuSolver master = new SudokuSolver();
         master.solveSudokuConsole(s, true);
     }
@@ -54,7 +63,6 @@ public class Tester {
         SudokuSolver master = new SudokuSolver();
         Scanner scan = new Scanner(System.in);
         while(true){
-            System.out.printf("This is the sudoku: %s \n\n", s.debugSudoku);
             System.out.println("Enter a index: ");
             int input = scan.nextInt();
             System.out.println(master.isValidCell(input, s.getSquares()));

@@ -23,7 +23,7 @@ public class SudokuSolver {
             // TODO
             System.out.println(solve(sudoku).toString());
         } else {
-            Sudoku.printSudoku(solve(sudoku));
+            SudokuHelper.printSudoku(solve(sudoku));
         }
     }
 
@@ -47,7 +47,7 @@ public class SudokuSolver {
      * @param matrix In this version always the int[][] of this class.
      * @return true if cell could be filled or if out of bounds. false if there was no fitting value found.
      */
-    private boolean solving(int index, int [][] matrix){//} int yC, int xC){
+    private boolean solving(int index, int [][] matrix){
         int yC = index / 9;
         int xC = index % 9;
 
@@ -86,7 +86,7 @@ public class SudokuSolver {
      * @param cells The grid into which val should get inserted.
      * @return Whether this number is valid at this cell.
      */
-    private boolean isValidCell(int yC, int xC, int currentDigit, int[][] cells){
+    public boolean isValidCell(int yC, int xC, int currentDigit, int[][] cells){
         /* Go through the row. */
         for(int x = 0; x < 9; x++)
             if(currentDigit == cells[yC][x])
