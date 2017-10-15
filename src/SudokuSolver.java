@@ -23,7 +23,8 @@ public class SudokuSolver {
             // TODO
             System.out.println(solve(sudoku).toString());
         } else {
-            SudokuHelper.printSudoku(solve(sudoku));
+            solve(sudoku);
+            //SudokuHelper.printSudoku(solve(sudoku));
         }
     }
 

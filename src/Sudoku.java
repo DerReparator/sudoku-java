@@ -1,6 +1,7 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.io.*;
 
 /**
  * The reprensentation of a Sudoku.
@@ -8,14 +9,19 @@ import java.io.IOException;
 public class Sudoku {
 
     private final int[][] squares;
+    /**
+     * Used for determining an input-file.
+     */
+    private String selected = "";
+    public boolean weitermachen = false;
     String ls = System.getProperty("line.separator");
 
     /**
-     * In this early version a random Sudoku from 'easy50.txt' is loaded and stored in this Sudoku object.
+     * In this early version a FileSelectionDialog is displayed to select a file from which sudokus are randomly chosen.
      */
     public Sudoku() {
         squares = new int[9][9];
-        fillFromFile("easy50.txt");
+        fillFromFile();
     }
 
     /**
@@ -40,23 +46,36 @@ public class Sudoku {
      * @param pathname The name of the file.
      * @return True if successful.
      */
-    public boolean saveSudokuToFile(String pathname){
-        return false;
+    public boolean saveSudokuToFile(String pathname) {
+
+        try {
+            Writer w = new FileWriter(pathname);
+            w.write(SudokuHelper.arrayToString(squares));
+            w.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * Gets a random sudoku from easy50.txt and parses it into a 2D-byte-array.
-     * @param file Specifies the file in which Sudokus are stored.
      */
-    private void fillFromFile(String file){
+    private void fillFromFile(){
         String fileString = null;
         // TODO get the number of lines from the parsed file.
         int lines = 50;
+
+        String fileLoc = "easy50.txt";
+
         try {
-            fileString = readFile(file);
+            fileString = readFile(fileLoc);//readFile(showFileSelection());
         } catch (IOException e) {
             System.err.println("Oops! Something went wrong while reading from file!");
         }
+
 
         int lineNr = (int) (Math.random() * lines);
         int i = 0;
@@ -74,6 +93,52 @@ public class Sudoku {
                 for (int x = 0; x < 9; x++)
                     squares[y][x] = Character.getNumericValue(sudoku[y*9+x]);
         }
+    }
+
+    /**
+     * Shows a window with the possible files.
+     * @return The pathname of the chosen file.
+     * @throws IOException
+     */
+    private String showFileSelection() throws IOException {
+        JDialog selcFrame = new JDialog();
+        selcFrame.setTitle("Select a file");
+        JPanel panel = new JPanel();
+        JComboBox<File> selection = new JComboBox<>();
+
+
+        File dir = new File(".");
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".txt");
+            }
+        };
+        File[] files = dir.listFiles(filter);
+
+        for(File f : files){
+            if(f.isFile())
+                selection.addItem(f);
+        }
+
+
+
+        selcFrame.setLayout(new BorderLayout());
+        selcFrame.add(panel, BorderLayout.CENTER);
+        panel.add(selection);
+        //selcFrame.pack();
+        selcFrame.setMinimumSize(new Dimension(300,100));
+        selcFrame.setLocationRelativeTo(null);
+        selcFrame.setVisible(true);
+
+        selection.addActionListener(e -> {
+            this.selected = ((File) selection.getSelectedItem()).getAbsolutePath();
+            weitermachen = true;
+            selcFrame.dispose();
+        });
+        while(!weitermachen);
+
+        return selected;
     }
 
     /**

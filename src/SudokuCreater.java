@@ -14,7 +14,7 @@ public class SudokuCreater {
     public Sudoku createSudoku(){
         int listIndex, index;
         int currentDigit;
-        int y,x, i;
+        int y,x, i, j;
 
         for(int n = 0; n < 81; n++)
             freeIndices.add(new Integer(n));
@@ -25,9 +25,15 @@ public class SudokuCreater {
             index = freeIndices.remove(listIndex);
             y = index / 9;
             x = index % 9;
+            j = 0;
             while(!solve.isValidCell(y,x,currentDigit,sudoku)){
+                if(j >= 9)
+                    break;
                 currentDigit = (currentDigit % 9) + 1;
+                j++;
             }
+            if(j >= 9)
+                break;
             sudoku[y][x] = currentDigit;
         }
         System.out.printf("\nDifficulty: [%d]\n", i);
@@ -35,6 +41,6 @@ public class SudokuCreater {
     }
 
     private int getDifficulty(){
-        return 17 + (int) (Math.random() * (81-17));
+        return 60;//17 + SudokuHelper.randInt(0, 81-17);
     }
 }
